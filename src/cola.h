@@ -1,7 +1,6 @@
 #ifndef COLA_H
 #define COLA_H
 
-
 typedef struct NodoCola {
 
     char dato;
@@ -31,3 +30,4 @@ void mostrarCola(Cola* c);
 void liberarCola(Cola* c);
 
 #endif
+
