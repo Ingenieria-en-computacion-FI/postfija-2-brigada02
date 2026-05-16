@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 #include "cola.h"
+
 
 void inicializarCola(Cola* c) {
 
@@ -67,6 +69,7 @@ char dequeue(Cola* c) {
 
     return dato;
 }
+
 
 void mostrarCola(Cola* c) {
 
