@@ -1,45 +1,76 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include "../include/parser.h"
-#include "../include/evaluator.h"
-#include "../include/cola.h"
+#include "cola.h"
+#include "postfija.h"
 
 int main() {
 
-    Variable variables[MAX_VARIABLES];
+    FILE* archivo = fopen("entrada.txt", "r");
 
-    int totalVariables;
+    if(archivo == NULL) {
 
-    char expresion[MAX_EXPR];
+        printf("No se pudo abrir el archivo\n");
 
-    cargarArchivo(
-        "input/caso1.txt",
-        variables,
-        &totalVariables,
-        expresion
-    );
+        return 1;
+    }
 
-    printf("Expresion infija:\n");
+    float variables[26] = {0};
+
+    char linea[100];
+
+    char variable;
+
+    float valor;
+
+    char expresion[100];
+
+    while(fgets(linea, sizeof(linea), archivo)) {
+
+        if(strchr(linea, '=')) {
+
+            sscanf(linea, " %c = %f", &variable, &valor);
+
+            variables[variable - 'a'] = valor;
+        }
+
+        else if(strlen(linea) > 1) {
+
+            sscanf(linea, "%s", expresion);
+        }
+    }
+
+    fclose(archivo);
+
+    if(!parentesisBalanceados(expresion)) {
+
+        printf("error, parentesis no balanceados\n");
+
+        return 1;
+    }
+
+    Cola* postfija = infijaAPostfija(expresion);
+
+    printf("expresion infija:\n");
+
     printf("%s\n\n", expresion);
 
-    Cola* postfija =
-        infijaAPostfija(expresion);
+    printf("expresion postfija:\n");
 
-    printf("Expresion postfija:\n");
+    mostrarCola(postfija);
 
-    imprimirCola(postfija);
+    printf("\n");
 
-    float resultado =
-        evaluarPostfija(
-            postfija,
-            variables,
-            totalVariables
-        );
+    float resultado = evaluarPostfija(postfija, variables);
 
-    printf("\nResultado:\n");
+    printf("resultado:\n");
+
     printf("%.2f\n", resultado);
 
-    destruirCola(postfija);
+    liberarCola(postfija);
+
+    free(postfija);
 
     return 0;
 }
